@@ -1,0 +1,36 @@
+<h1 mat-dialog-title>{{ mode == "creation" ? "Criar" : "Editar" }} Pedido</h1>
+<div mat-dialog-content>
+  Adicione produtos ao pedido:
+  <form [formGroup]="orderForm">
+    <div class="d-flex gap-3 align-items-center">
+      <mat-form-field appearance="outline" class="col-5 mb-3 mt-3">
+        <mat-label>Descrição do produto</mat-label>
+        <input
+          matInput
+          formControlName="description"
+          placeholder="Ex: Batatas"
+        />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="col-2 mr-4">
+        <mat-label>Preço</mat-label>
+        <input matInput formControlName="value" placeholder="Ex: 55,00" />
+      </mat-form-field>
+      <button
+        type="submit"
+        mat-fab
+        color="primary"
+        class="col-2 align-self-start mt-3"
+        [disabled]="orderForm.invalid || !orderForm.dirty"
+      >
+        <!-- {{ botaoSubmeter | titlecase }} -->
+        <mat-icon>check</mat-icon>
+      </button>
+    </div>
+  </form>
+  Total:
+</div>
+<div mat-dialog-actions>
+  <button mat-button mat-dialog-close>Cancelar</button>
+  <button mat-button [mat-dialog-close]="true" cdkFocusInitial>Criar</button>
+</div>
