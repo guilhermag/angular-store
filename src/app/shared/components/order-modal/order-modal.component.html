@@ -1,7 +1,7 @@
 <h1 mat-dialog-title>{{ mode == "creation" ? "Criar" : "Editar" }} Pedido</h1>
 <div mat-dialog-content>
   Adicione produtos ao pedido:
-  <form [formGroup]="orderForm">
+  <form [formGroup]="productForm" (ngSubmit)="addProduct()">
     <div class="d-flex gap-3 align-items-center">
       <mat-form-field appearance="outline" class="col-5 mb-3 mt-3">
         <mat-label>Descrição do produto</mat-label>
@@ -14,21 +14,31 @@
 
       <mat-form-field appearance="outline" class="col-2 mr-4">
         <mat-label>Preço</mat-label>
-        <input matInput formControlName="value" placeholder="Ex: 55,00" />
+        <input matInput formControlName="price" placeholder="Ex: 55,00" />
       </mat-form-field>
       <button
         type="submit"
         mat-fab
         color="primary"
         class="col-2 align-self-start mt-3"
-        [disabled]="orderForm.invalid || !orderForm.dirty"
+        [disabled]="productForm.invalid || !productForm.dirty"
       >
         <!-- {{ botaoSubmeter | titlecase }} -->
         <mat-icon>check</mat-icon>
       </button>
     </div>
   </form>
-  Total:
+  <table *ngIf="products().length > 0">
+    <tr>
+      <th>Descrição</th>
+      <th>Valor</th>
+    </tr>
+    <tr *ngFor="let product of products()">
+      <td>{{ product.description }}</td>
+      <td>{{ product.price | currency : "USD" }}</td>
+    </tr>
+  </table>
+  Total: {{ total() | currency : "BRL" }}
 </div>
 <div mat-dialog-actions>
   <button mat-button mat-dialog-close>Cancelar</button>

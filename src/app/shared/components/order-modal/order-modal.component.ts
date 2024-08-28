@@ -1,41 +1,63 @@
-import { Component, inject, Input } from '@angular/core';
 import {
-  FormBuilder,
+  Component,
+  computed,
+  inject,
+  Input,
+  OnInit,
+  signal,
+  Signal,
+  WritableSignal,
+} from '@angular/core';
+import {
   FormControl,
   FormGroup,
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { MatDialogModule } from '@angular/material/dialog';
-import { Product } from '../../model/order';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
+import { Order, Product } from '../../model/order';
 import { MaterialModule } from '../../../material/material.module';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-order-modal',
   standalone: true,
-  imports: [ReactiveFormsModule, MaterialModule],
+  imports: [CommonModule, ReactiveFormsModule, MaterialModule],
   templateUrl: './order-modal.component.html',
   styleUrl: './order-modal.component.scss',
 })
-export class OrderModalComponent {
+export class OrderModalComponent implements OnInit {
   @Input() mode = 'creation';
-  private formBuilder = inject(FormBuilder);
+  @Input() order: Order = {
+    id: -1,
+    products: [],
+    status: false,
+    totalProducts: 0,
+    total: 0,
+  };
+  products: WritableSignal<Product[]> = signal([]);
+  total: Signal<number> = signal(0);
 
-  // id?: number;
-  // totalProducts?: number;
-  // products: Product[];
-  // total: number;
-  // status: boolean;
-  totalProducts: Product[] = [];
-
-  orderForm = new FormGroup({
+  productForm = new FormGroup({
     description: new FormControl('', [
       Validators.required,
       Validators.minLength(4),
       Validators.maxLength(50),
     ]),
-    value: new FormControl(0, [Validators.required, Validators.min(0.01)]),
+    price: new FormControl(0, [Validators.required, Validators.min(0.01)]),
   });
+
+  ngOnInit(): void {
+    this.total = computed(() =>
+      this.products().reduce((acc, product) => acc + product.price, 0)
+    );
+  }
+
+  addProduct() {
+    const description = this.productForm.get('description')?.value || '';
+    const price = this.productForm.get('price')?.value || 0;
+    this.products.update((products) => [...products, { description, price }]);
+
+    // Reseta o formulário
+    this.productForm.reset({ description: '', price: 0 });
+  }
 }
