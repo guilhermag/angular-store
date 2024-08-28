@@ -36,6 +36,7 @@ export class OrderModalComponent implements OnInit {
   };
   products: WritableSignal<Product[]> = signal([]);
   total: Signal<number> = signal(0);
+  showTable = false;
 
   productForm = new FormGroup({
     description: new FormControl('', [
@@ -43,10 +44,11 @@ export class OrderModalComponent implements OnInit {
       Validators.minLength(4),
       Validators.maxLength(50),
     ]),
-    price: new FormControl(0, [Validators.required, Validators.min(0.01)]),
+    price: new FormControl(0, [Validators.required, Validators.min(0.01), Validators.pattern("^[0-9]*$")]),
   });
 
   ngOnInit(): void {
+    //TODO verificar a soma depois que exclui
     this.total = computed(() =>
       this.products().reduce((acc, product) => acc + product.price, 0)
     );
@@ -56,8 +58,14 @@ export class OrderModalComponent implements OnInit {
     const description = this.productForm.get('description')?.value || '';
     const price = this.productForm.get('price')?.value || 0;
     this.products.update((products) => [...products, { description, price }]);
-
+    // console.log(this.products());
     // Reseta o formulário
     this.productForm.reset({ description: '', price: 0 });
   }
+  
+  deleteProduct(idx: number) {
+    this.products.update(products => {products.splice(idx, 1); return products});
+  }
+  
+
 }

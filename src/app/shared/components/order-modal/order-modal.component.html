@@ -5,24 +5,15 @@
     <div class="d-flex gap-3 align-items-center">
       <mat-form-field appearance="outline" class="col-5 mb-3 mt-3">
         <mat-label>Descrição do produto</mat-label>
-        <input
-          matInput
-          formControlName="description"
-          placeholder="Ex: Batatas"
-        />
+        <input matInput formControlName="description" placeholder="Ex: Batatas" />
       </mat-form-field>
 
       <mat-form-field appearance="outline" class="col-2 mr-4">
         <mat-label>Preço</mat-label>
         <input matInput formControlName="price" placeholder="Ex: 55,00" />
       </mat-form-field>
-      <button
-        type="submit"
-        mat-fab
-        color="primary"
-        class="col-2 align-self-start mt-3"
-        [disabled]="productForm.invalid || !productForm.dirty"
-      >
+      <button type="submit" mat-fab color="primary" class="col-2 align-self-start mt-3"
+        [disabled]="productForm.invalid || !productForm.dirty">
         <!-- {{ botaoSubmeter | titlecase }} -->
         <mat-icon>check</mat-icon>
       </button>
@@ -33,9 +24,12 @@
       <th>Descrição</th>
       <th>Valor</th>
     </tr>
-    <tr *ngFor="let product of products()">
+    <tr *ngFor="let product of products(); index as idx">
       <td>{{ product.description }}</td>
-      <td>{{ product.price | currency : "USD" }}</td>
+      <td>{{ product.price | currency : "BRL" }}</td>
+      <td> <button mat-icon-button (click)="deleteProduct(idx)">
+          <mat-icon>delete</mat-icon>
+        </button></td>
     </tr>
   </table>
   Total: {{ total() | currency : "BRL" }}
