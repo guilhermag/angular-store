@@ -4,6 +4,8 @@ import { MaterialModule } from './material/material.module';
 import { OrderTableComponent } from './shared/components/order-table/order-table.component';
 import { MatDialog } from '@angular/material/dialog';
 import { OrderModalComponent } from './shared/components/order-modal/order-modal.component';
+import { OrdersService } from './shared/services/orders.service';
+import { concatMap, forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -14,15 +16,23 @@ import { OrderModalComponent } from './shared/components/order-modal/order-modal
 })
 export class AppComponent implements OnInit {
   dialog = inject(MatDialog);
+  ordersService = inject(OrdersService);
 
   ngOnInit(): void {
-    this.openOrderModal();
+    this.ordersService.clearOrdersData();
   }
 
   openOrderModal() {
-    this.dialog.open(OrderModalComponent, {
-      height: '400px',
+    const dialogRef = this.dialog.open(OrderModalComponent, {
+      data: { mode: 'create' },
+      height: '500px',
       minWidth: '900px',
     });
+    dialogRef
+      .afterClosed()
+      .pipe(concatMap(() => this.ordersService.getOrders()))
+      .subscribe((orders) => {
+        this.ordersService.orders$.next(orders);
+      });
   }
 }

@@ -1,0 +1,30 @@
+.right-align {
+  text-align: right;
+}
+
+input.right-align::-webkit-outer-spin-button,
+input.right-align::-webkit-inner-spin-button {
+  display: none;
+}
+
+input.right-align {
+  -moz-appearance: textfield;
+}
+
+section {
+  padding-top: 20px;
+}
+
+.table {
+  th {
+    font-size: 16px;
+  }
+}
+
+.content {
+  font-size: 16px;
+}
+
+.total {
+  font-size: 16px;
+}

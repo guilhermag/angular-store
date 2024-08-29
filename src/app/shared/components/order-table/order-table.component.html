@@ -7,7 +7,7 @@
         </th>
         <td mat-cell *matCellDef="let order">
           <div *ngIf="column.id !== 'action'">
-            {{ order[column.id] }}
+            {{ order[column.id] | suffix : column.id }}
           </div>
           <div *ngIf="column.id === 'action'">
             <button mat-icon-button (click)="edit(order)">

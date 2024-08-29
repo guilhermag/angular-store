@@ -1,12 +1,15 @@
 import { Component, inject, Input, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { OrdersService } from '../../services/orders.service';
-import { Observable, of } from 'rxjs';
+import { concatMap, Observable, of } from 'rxjs';
 import { Order } from '../../model/order';
 import { CommonModule } from '@angular/common';
 import { MatTableModule } from '@angular/material/table';
 import { MatIconModule } from '@angular/material/icon';
 import { MaterialModule } from '../../../material/material.module';
+import { SuffixPipe } from '../../pipes/suffix.pipe';
+import { OrderModalComponent } from '../order-modal/order-modal.component';
+import { ConfirmationModal } from '../confirmation-modal/confirmation-modal.component';
 
 interface TableData {
   title: string;
@@ -16,16 +19,14 @@ interface TableData {
 @Component({
   selector: 'order-table',
   standalone: true,
-  imports: [CommonModule, MaterialModule],
+  imports: [CommonModule, MaterialModule, SuffixPipe],
   templateUrl: './order-table.component.html',
   styleUrl: './order-table.component.scss',
 })
 export class OrderTableComponent implements OnInit {
   dialog = inject(MatDialog);
   ordersService = inject(OrdersService);
-  @Input() orders$: Observable<Order[]> = of([
-    { id: 1, totalProducts: 0, products: [], total: 0, status: false },
-  ]);
+  orders$ = this.ordersService.orders$;
   ordersData: Order[] = [];
 
   columns: TableData[] = [
@@ -45,10 +46,35 @@ export class OrderTableComponent implements OnInit {
   }
 
   edit(order: Order) {
-    //TODO
+    const dialogRef = this.dialog.open(OrderModalComponent, {
+      data: { mode: 'edit', code: order.id },
+      height: '500px',
+      minWidth: '900px',
+    });
+    dialogRef
+      .afterClosed()
+      .pipe(concatMap(() => this.ordersService.getOrders()))
+      .subscribe((orders) => {
+        this.ordersService.orders$.next(orders);
+      });
   }
 
   delete(order: Order) {
-    //TODO
+    const dialogRef = this.dialog.open(ConfirmationModal);
+
+    dialogRef
+      .afterClosed()
+      .pipe(
+        concatMap((result) => {
+          if (result) {
+            return this.ordersService.deleteOrder(order);
+          } else {
+            return of(null);
+          }
+        })
+      )
+      .subscribe((orders) => {
+        if (orders) this.ordersService.orders$.next(orders);
+      });
   }
 }

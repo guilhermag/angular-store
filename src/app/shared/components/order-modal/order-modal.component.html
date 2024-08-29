@@ -1,40 +1,90 @@
-<h1 mat-dialog-title>{{ mode == "creation" ? "Criar" : "Editar" }} Pedido</h1>
-<div mat-dialog-content>
-  Adicione produtos ao pedido:
-  <form [formGroup]="productForm" (ngSubmit)="addProduct()">
+<h1 mat-dialog-title>{{ title }}</h1>
+<div mat-dialog-content class="content">
+  {{ content }}
+  <form
+    [formGroup]="productForm"
+    (ngSubmit)="addProduct()"
+    *ngIf="!order.status"
+  >
     <div class="d-flex gap-3 align-items-center">
       <mat-form-field appearance="outline" class="col-5 mb-3 mt-3">
         <mat-label>Descrição do produto</mat-label>
-        <input matInput formControlName="description" placeholder="Ex: Batatas" />
+        <input
+          matInput
+          formControlName="description"
+          placeholder="Ex: Batatas"
+        />
+        <mat-hint>Descrições entre 4 a 50 caracteres</mat-hint>
       </mat-form-field>
 
-      <mat-form-field appearance="outline" class="col-2 mr-4">
+      <mat-form-field
+        appearance="outline"
+        class="col-4 mr-4"
+        floatLabel="always"
+      >
         <mat-label>Preço</mat-label>
-        <input matInput formControlName="price" placeholder="Ex: 55,00" />
+        <input
+          matInput
+          type="number"
+          formControlName="price"
+          placeholder="Ex: 55,00"
+          class="right-align"
+        />
+        <span matTextPrefix>R$&nbsp;</span>
       </mat-form-field>
-      <button type="submit" mat-fab color="primary" class="col-2 align-self-start mt-3"
-        [disabled]="productForm.invalid || !productForm.dirty">
+      <button
+        type="submit"
+        mat-fab
+        color="primary"
+        class="col-2 align-self-start mt-3"
+        [disabled]="productForm.invalid || !productForm.dirty"
+      >
         <!-- {{ botaoSubmeter | titlecase }} -->
         <mat-icon>check</mat-icon>
       </button>
     </div>
   </form>
-  <table *ngIf="products().length > 0">
-    <tr>
-      <th>Descrição</th>
-      <th>Valor</th>
-    </tr>
-    <tr *ngFor="let product of products(); index as idx">
-      <td>{{ product.description }}</td>
-      <td>{{ product.price | currency : "BRL" }}</td>
-      <td> <button mat-icon-button (click)="deleteProduct(idx)">
-          <mat-icon>delete</mat-icon>
-        </button></td>
-    </tr>
-  </table>
-  Total: {{ total() | currency : "BRL" }}
+  <section *ngIf="products().length > 0">
+    <table class="table">
+      <tr>
+        <th>Descrição</th>
+        <th>Valor</th>
+        <th>Excluir</th>
+      </tr>
+      <tr *ngFor="let product of products(); index as idx">
+        <td>{{ product.description }}</td>
+        <td>{{ product.price | currency : "BRL" }}</td>
+        <td>
+          <button
+            mat-icon-button
+            (click)="deleteProduct(idx)"
+            [disabled]="order.status"
+          >
+            <mat-icon>delete</mat-icon>
+          </button>
+        </td>
+      </tr>
+    </table>
+    <div>
+      <h5 class="total">Total: {{ total() | currency : "BRL" }}</h5>
+    </div>
+  </section>
 </div>
 <div mat-dialog-actions>
-  <button mat-button mat-dialog-close>Cancelar</button>
-  <button mat-button [mat-dialog-close]="true" cdkFocusInitial>Criar</button>
+  <div *ngIf="!order.status; else closeModal">
+    <button mat-button mat-dialog-close>Cancelar</button>
+    <button mat-button cdkFocusInitial (click)="handleOrder()">Salvar</button>
+    <button
+      mat-button
+      cdkFocusInitial
+      [disabled]="products().length === 0"
+      (click)="closeOrder()"
+    >
+      Finalizar Pedido
+    </button>
+  </div>
 </div>
+
+<ng-template #closeModal>
+  <button mat-button mat-dialog-close>Fechar</button>
+</ng-template>
