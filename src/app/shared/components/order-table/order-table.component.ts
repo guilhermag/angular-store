@@ -8,6 +8,7 @@ import { MaterialModule } from '../../../material/material.module';
 import { SuffixPipe } from '../../pipes/suffix.pipe';
 import { OrderModalComponent } from '../order-modal/order-modal.component';
 import { ConfirmationModal } from '../confirmation-modal/confirmation-modal.component';
+import { MatRadioChange } from '@angular/material/radio';
 
 interface TableData {
   title: string;
@@ -41,6 +42,20 @@ export class OrderTableComponent implements OnInit {
     this.orders$.subscribe((res) => {
       this.ordersData = res;
     });
+  }
+
+  filterTable(change: MatRadioChange) {
+    if (change.value === 'closed') {
+      this.ordersData = this.ordersService.orders$.value.filter(
+        (order) => order.status
+      );
+    } else if (change.value === 'open') {
+      this.ordersData = this.ordersService.orders$.value.filter(
+        (order) => !order.status
+      );
+    } else {
+      this.ordersData = this.ordersService.orders$.value;
+    }
   }
 
   edit(order: Order) {

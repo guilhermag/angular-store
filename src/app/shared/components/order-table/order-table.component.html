@@ -1,5 +1,18 @@
 <section class="d-flex justify-content-center pt-4">
   <div *ngIf="(orders$ | async)!.length > 0; else noOrders" class="w-95">
+    <div class="d-flex flex-column">
+      <label id="example-radio-group-label"
+        >Selecione o Filtro que desejar para os pedidos</label
+      >
+      <mat-radio-group
+        aria-label="Select an option"
+        (change)="filterTable($event)"
+      >
+        <mat-radio-button value="open">Abertos</mat-radio-button>
+        <mat-radio-button value="closed">Fechados</mat-radio-button>
+        <mat-radio-button value="all" checked="true">Todos</mat-radio-button>
+      </mat-radio-group>
+    </div>
     <table mat-table [dataSource]="ordersData" class="mat-elevation-z8">
       <ng-container [matColumnDef]="column.id" *ngFor="let column of columns">
         <th mat-header-cell *matHeaderCellDef>
