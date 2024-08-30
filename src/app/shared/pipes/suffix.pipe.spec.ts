@@ -11,7 +11,7 @@ describe('SuffixPipe', () => {
   });
   it('should transform status column', () => {
     expect(pipe.transform('true', 'status')).toEqual('Fechado');
-    expect(pipe.transform('false', 'status')).toEqual('Aberto');
+    expect(pipe.transform('', 'status')).toEqual('Aberto');
   });
   it('should transform others column', () => {
     expect(pipe.transform('100', 'id')).toEqual('100');

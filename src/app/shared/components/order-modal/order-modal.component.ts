@@ -1,7 +1,6 @@
 import {
   Component,
   computed,
-  Inject,
   inject,
   OnDestroy,
   OnInit,
@@ -89,7 +88,6 @@ export class OrderModalComponent implements OnInit, OnDestroy {
         if (order) {
           this.order = order;
           this.products.set(order.products);
-          console.log(order);
           if (order.status) {
             this.content = 'Listagem de produtos do pedido finalizado:';
             this.title = 'Consulta pedido finalizado';

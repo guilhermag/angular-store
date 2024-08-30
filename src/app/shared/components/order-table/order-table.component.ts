@@ -1,11 +1,9 @@
-import { Component, inject, Input, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { OrdersService } from '../../services/orders.service';
-import { concatMap, Observable, of } from 'rxjs';
+import { concatMap, of } from 'rxjs';
 import { Order } from '../../model/order';
 import { CommonModule } from '@angular/common';
-import { MatTableModule } from '@angular/material/table';
-import { MatIconModule } from '@angular/material/icon';
 import { MaterialModule } from '../../../material/material.module';
 import { SuffixPipe } from '../../pipes/suffix.pipe';
 import { OrderModalComponent } from '../order-modal/order-modal.component';

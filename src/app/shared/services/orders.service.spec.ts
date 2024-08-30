@@ -1,7 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-
 import { OrdersService } from './orders.service';
-import { forkJoin, of } from 'rxjs';
 import { orderMock, productsMock } from '../mocks/order';
 import { Order } from '../model/order';
 

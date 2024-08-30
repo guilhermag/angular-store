@@ -5,7 +5,7 @@ import { OrderTableComponent } from './shared/components/order-table/order-table
 import { MatDialog } from '@angular/material/dialog';
 import { OrderModalComponent } from './shared/components/order-modal/order-modal.component';
 import { OrdersService } from './shared/services/orders.service';
-import { concatMap, forkJoin } from 'rxjs';
+import { concatMap } from 'rxjs';
 
 @Component({
   selector: 'app-root',
