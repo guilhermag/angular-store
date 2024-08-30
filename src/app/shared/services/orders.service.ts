@@ -22,9 +22,7 @@ export class OrdersService {
     return this.getOrders().pipe(
       tap((orders) => {
         const maxId =
-          orders.length > 0
-            ? Math.max(...orders.map((order) => order.id || 0))
-            : 0;
+          orders.length > 0 ? Math.max(...orders.map((order) => order.id!)) : 0;
         order.id = maxId + 1;
         localStorage.setItem('orders', JSON.stringify([...orders, order]));
       })

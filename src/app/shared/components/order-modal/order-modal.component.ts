@@ -35,7 +35,7 @@ interface DialogData {
 })
 export class OrderModalComponent implements OnInit, OnDestroy {
   title = '';
-  content = 'Adicione produtos ao pedido:';
+  content = '';
   ordersService = inject(OrdersService);
   private subscription: Subscription = new Subscription();
   readonly dialogRef = inject(MatDialogRef<OrderModalComponent>);
@@ -57,7 +57,7 @@ export class OrderModalComponent implements OnInit, OnDestroy {
       Validators.minLength(4),
       Validators.maxLength(50),
     ]),
-    price: new FormControl(null, [
+    price: new FormControl(0, [
       Validators.required,
       Validators.min(0.01),
       Validators.pattern('^[0-9]*$'),
@@ -79,6 +79,7 @@ export class OrderModalComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.title = `${this.data.mode == 'create' ? 'Criar' : 'Editar'} Pedido`;
+    this.content = 'Adicione produtos ao pedido:';
     this.total = computed(() =>
       this.products().reduce((acc, product) => acc + Number(product.price), 0)
     );
@@ -88,6 +89,7 @@ export class OrderModalComponent implements OnInit, OnDestroy {
         if (order) {
           this.order = order;
           this.products.set(order.products);
+          console.log(order);
           if (order.status) {
             this.content = 'Listagem de produtos do pedido finalizado:';
             this.title = 'Consulta pedido finalizado';

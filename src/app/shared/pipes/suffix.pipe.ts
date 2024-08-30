@@ -10,7 +10,7 @@ export class SuffixPipe implements PipeTransform {
       return `R$ ${Number(value).toFixed(2)}`;
     }
     if (column === 'status') {
-      return Boolean(value) ? 'Fechado' : 'Aberto';
+      return value === 'true' ? 'Fechado' : 'Aberto';
     }
     return String(value);
   }
